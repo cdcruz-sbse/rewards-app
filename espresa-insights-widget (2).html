@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espresa Insights</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF9F7;
+    --surface: #FFFFFF;
+    --surface-hover: #F7F5F2;
+    --text: #1A1A1A;
+    --text-secondary: #6B6560;
+    --text-muted: #A09A93;
+    --accent: #E8432A;
+    --accent-soft: #FFF0ED;
+    --accent-hover: #D13A23;
+    --green: #2A9D5C;
+    --green-soft: #E8F8EF;
+    --blue: #3B7DDD;
+    --blue-soft: #EDF3FC;
+    --purple: #7C5CFC;
+    --purple-soft: #F3EFFF;
+    --border: #EDE9E4;
+    --border-light: #F5F2EE;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(26,26,26,0.04), 0 4px 12px rgba(26,26,26,0.03);
+    --shadow-hover: 0 2px 8px rgba(26,26,26,0.06), 0 8px 24px rgba(26,26,26,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .widget {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* — Cards — */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card.hoverable:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+    cursor: pointer;
+  }
+
+  /* — Stat grid — */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .stat-card { text-align: center; }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  /* — Badges — */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+  .badge--green  { color: var(--green);  background: var(--green-soft); }
+  .badge--purple { color: var(--purple); background: var(--purple-soft); }
+
+  /* — Section headers — */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .section-header__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header__left span { font-size: 16px; }
+  .section-header__left h3 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .section-header__action {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: inherit;
+    transition: color 0.15s;
+  }
+  .section-header__action:hover { color: var(--accent-hover); }
+
+  /* — Metric pills — */
+  .metric-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .metric-pill {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .metric-pill__value {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .metric-pill__label {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+  .metric-pill--green  { background: var(--green-soft); }
+  .metric-pill--green .metric-pill__value,
+  .metric-pill--green .metric-pill__label { color: var(--green); }
+  .metric-pill--accent { background: var(--accent-soft); }
+  .metric-pill--accent .metric-pill__value,
+  .metric-pill--accent .metric-pill__label { color: var(--accent); }
+  .metric-pill--purple { background: var(--purple-soft); }
+  .metric-pill--purple .metric-pill__value,
+  .metric-pill--purple .metric-pill__label { color: var(--purple); }
+  .metric-pill--blue   { background: var(--blue-soft); }
+  .metric-pill--blue .metric-pill__value,
+  .metric-pill--blue .metric-pill__label { color: var(--blue); }
+
+  /* — Interactive rows — */
+  .row-item {
+    padding: 12px 14px;
+    background: var(--surface-hover);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .row-item:last-child { margin-bottom: 0; }
+  .row-item:hover { background: var(--border-light); }
+
+  /* — Challenge row — */
+  .challenge-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .challenge-name { font-size: 13px; font-weight: 600; }
+  .challenge-days { font-size: 11px; color: var(--text-muted); }
+
+  .progress-track {
+    position: relative;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), #FF7B5F);
+    width: 0;
+    transition: width 1s ease-out;
+  }
+  .challenge-bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+  .challenge-pct { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+  .challenge-participants { font-size: 11px; color: var(--text-muted); }
+
+  /* — Recognition row — */
+  .recog-row {
+    display: flex;
+    gap: 12px;
+    padding: 11px 12px;
+  }
+  .recog-emoji { font-size: 22px; line-height: 1; }
+  .recog-body { flex: 1; min-width: 0; }
+  .recog-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .recog-from { font-weight: 700; }
+  .recog-msg  { color: var(--text-secondary); }
+  .recog-time { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<div class="widget" id="widget"></div>
+
+<script>
+const ESPRESA_URL = "https://app.espresa.com";
+
+const DATA = {
+  wellness: {
+    activeChallenges: [
+      { id: 1, name: "30-Day Step Challenge", progress: 72, daysLeft: 8, participants: 214 },
+      { id: 2, name: "Mindfulness Minutes", progress: 45, daysLeft: 15, participants: 89 }
+    ],
+    weeklyScore: 82,
+    trend: "+6"
+  },
+  recognition: {
+    received: 3,
+    given: 5,
+    latest: [
+      { id: 1, from: "Jordan K.", message: "Amazing work on the Q2 launch deck!", emoji: "🚀", time: "2h ago" },
+      { id: 2, from: "Priya S.", message: "Thanks for mentoring the new hires this week", emoji: "🌟", time: "1d ago" }
+    ]
+  }
+};
+
+function openLink(path) {
+  window.open(`${ESPRESA_URL}${path}`, "_blank");
+}
+
+function render() {
+  const w = DATA.wellness;
+  const r = DATA.recognition;
+
+  document.getElementById("widget").innerHTML = `
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+      <div class="card hoverable stat-card" onclick="openLink('/wellness')">
+        <div class="stat-value" style="color:var(--green)">${w.weeklyScore}</div>
+        <div class="stat-label">Wellness Score</div>
+        <span class="badge badge--green">${w.trend} this week</span>
+      </div>
+      <div class="card hoverable stat-card" onclick="openLink('/recognition')">
+        <div class="stat-value" style="color:var(--purple)">${r.received}</div>
+        <div class="stat-label">Kudos Received</div>
+        <span class="badge badge--purple">This month</span>
+      </div>
+    </div>
+
+    <!-- Wellness Section -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-header__left">
+          <span>🧘</span>
+          <h3>Wellness</h3>
+        </div>
+        <button class="section-header__action" onclick="openLink('/wellness')">All Challenges →</button>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-pill metric-pill--green">
+          <span class="metric-pill__value">${w.weeklyScore}</span>
+          <span class="metric-pill__label">Weekly Score</span>
+        </div>
+        <div class="metric-pill metric-pill--accent">
+          <span class="metric-pill__value">${w.trend}</span>
+          <span class="metric-pill__label">vs Last Week</span>
+        </div>
+      </div>
+
+      ${w.activeChallenges.map(ch => `
+        <div class="row-item" onclick="openLink('/wellness/challenges/${ch.id}')">
+          <div class="challenge-top">
+            <span class="challenge-name">${ch.name}</span>
+            <span class="challenge-days">${ch.daysLeft}d left</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" data-width="${ch.progress}%"></div>
+          </div>
+          <div class="challenge-bottom">
+            <span class="challenge-pct">${ch.progress}%</span>
+            <span class="challenge-participants">${ch.participants} participating</span>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+
+    <!-- Recognition Section -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-header__left">
+          <span>🏆</span>
+          <h3>Recognition</h3>
+        </div>
+        <button class="section-header__action" onclick="openLink('/recognition')">Give Kudos →</button>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-pill metric-pill--purple" style="text-align:center">
+          <span class="metric-pill__value">${r.received}</span>
+          <span class="metric-pill__label">Received</span>
+        </div>
+        <div class="metric-pill metric-pill--blue" style="text-align:center">
+          <span class="metric-pill__value">${r.given}</span>
+          <span class="metric-pill__label">Given</span>
+        </div>
+      </div>
+
+      ${r.latest.map(k => `
+        <div class="row-item recog-row" onclick="openLink('/recognition')">
+          <span class="recog-emoji">${k.emoji}</span>
+          <div class="recog-body">
+            <div class="recog-text">
+              <span class="recog-from">${k.from}</span>
+              <span class="recog-msg">${k.message}</span>
+            </div>
+            <div class="recog-time">${k.time}</div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  // Animate progress bars after paint
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".progress-fill").forEach(el => {
+      el.style.width = el.dataset.width;
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
